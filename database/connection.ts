@@ -1,20 +1,10 @@
-import { Arango } from "https://deno.land/x/darango@0.1.6/mod.ts";
-import { Users } from "./schemas/Users.ts";
+import * as neo4j from "https://deno.land/x/neo4j_lite_client@4.4.6/mod.ts";
 
-const arango = await Arango.basicAuth({
-  uri: Deno.env.get("ARANGO_URI") || "http://localhost:8529/_db/_system",
-  username: Deno.env.get("ARANGO_USERNAME") || "root",
-  password: Deno.env.get("ARANGO_PASSWORD") || "openSesame",
-});
+const driver: neo4j.Driver = neo4j.driver(
+  "bolt://localhost:7687",
+  neo4j.auth.basic("neo4j", "bananapls")
+);
 
-const collection = await arango.createCollection<Users>("Users");
-console.log(collection);
+const session: neo4j.Session = driver.session();
 
-await collection.create({
-  name: "mama",
-  email: "asf",
-  password: "asf",
-  created_at: new Date(),
-  avatar: "asf",
-  online: true,
-});
+export { session };
